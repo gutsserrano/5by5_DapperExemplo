@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using Model;
 using Microsoft.Data.SqlClient;
 using Microsoft.IdentityModel.Protocols;
 using Model;
@@ -17,7 +18,6 @@ namespace Repository
 
         public PedidoRepository()
         {
-            //_conn = "Data Source=127.0.0.1; Initial Catalog=DBRestaurante; User Id=sa; Password=SqlServer2019!; TrustServerCertificate=Yes";
             _conn = ConfigurationManager.ConnectionStrings["StringConnection"].ConnectionString;
         }
 
@@ -38,6 +38,21 @@ namespace Repository
             }
 
             return result;
+        }
+
+        public List<Pedido> GetAll()
+        {
+            using (var db = new SqlConnection(_conn))
+            {
+                db.Open();
+
+                var list = db.Query<Pedido, Item, Pedido>(Pedido.GETALL, (pedido, item) =>
+                {
+                    pedido.Item = item;
+                    return pedido;
+                }, splitOn: "Id").ToList();
+                return (List<Pedido>) list;
+            }
         }
     }
 }

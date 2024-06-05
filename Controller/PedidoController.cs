@@ -21,5 +21,10 @@ namespace Controller
         {
             return _pedidoService.Inserir(pedido);
         }
+
+        public List<Pedido> GetAll()
+        {
+            return _pedidoService.GetAll();
+        }
     }
 }
